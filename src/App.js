@@ -38,6 +38,7 @@ function App() {
     if (id) {
       readText();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (error) console.log({ error });
