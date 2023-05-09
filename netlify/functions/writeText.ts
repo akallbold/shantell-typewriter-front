@@ -3,19 +3,18 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
-interface TextEntry {
-  id: string,
-  text: string
-}
-
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   if(event.body) {
-    const newEntry = JSON.parse(event.body) as TextEntry;
+    const newEntry = JSON.parse(JSON.parse(event.body))
+    const {id, text}  = newEntry
+ 
+    console.log({id, text}  )
+
     await prisma.text_data.create({
       data: {
-        id: newEntry.id,
-        text: newEntry.text
-      },
+        id,
+        text
+      }
     });
 
     return {

@@ -14,21 +14,23 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   let { id } = useParams();
+
   const readText = () => {
     setLoading(true);
-    fetch("/.netlify/functions/readText", {
+    fetch("/.netlify/functions/getText", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      method: "GET",
-      body: JSON.stringify(id),
+      method: "POST",
+      body: JSON.stringify({ id }),
     })
-      .then(function (res) {
+      .then((res) => res.json())
+      .then((res) => {
         setText(res.text);
         setLoading(false);
       })
-      .catch(function (res) {
+      .catch((res) => {
         setError(res);
         setLoading(false);
       });

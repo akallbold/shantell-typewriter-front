@@ -3,42 +3,35 @@ import "./App.css";
 import { Button, IconButton, Box, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
-const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
-
 function InputPanel(props) {
   const { input, setInput, setError, loading, setLoading } = props;
   const [url, setUrl] = useState("");
 
-  const writeData = async (body) => {
-    try {
-      const res = await fetch(`${BACKEND_BASE_URL}/create-message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body,
-      });
-      return res.json();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-  useEffect(() => {
-    console.log(url);
-  }, [url]);
-
   const saveTextToDatabase = async () => {
     setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
-    const body = JSON.stringify({ text: input, id: uuid, date: Date.now() });
+    const body = JSON.stringify({ text: input, id: uuid });
     try {
-      await writeData(body);
-      const localURL = `${window.location.href}${uuid}`;
-      setUrl(localURL);
-      setLoading(false);
-    } catch (e) {
-      setError(e);
-      setLoading(false);
+      fetch("/.netlify/functions/writeText", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+
+        body: JSON.stringify(body),
+      })
+        .then(function (res) {
+          console.log({ res });
+          setUrl(`${window.location.href}${uuid}`);
+          setLoading(false);
+        })
+        .catch(function (res) {
+          setError(res);
+          setLoading(false);
+        });
+    } catch (err) {
+      console.log(err);
     }
   };
 
