@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useParams } from "react-router";
 
-const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
+// const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
 
 function App() {
   const [input, setInput] = useState("");
@@ -14,21 +14,29 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   let { id } = useParams();
+  const readText = () => {
+    setLoading(true);
+    fetch("/.netlify/functions/readText", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+      body: JSON.stringify(id),
+    })
+      .then(function (res) {
+        setText(res.text);
+        setLoading(false);
+      })
+      .catch(function (res) {
+        setError(res);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     if (id) {
-      setLoading(true);
-      fetch(`${BACKEND_BASE_URL}/message/${id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          const row = data.rows[0];
-          setText(row.text);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log({ err });
-          setError(err);
-          setLoading(false);
-        });
+      readText();
     }
   }, [id]);
 
