@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import { Button, IconButton, Box, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -18,7 +18,6 @@ function InputPanel(props) {
           "Content-Type": "application/json",
         },
         method: "POST",
-
         body: JSON.stringify(body),
       })
         .then(function (res) {

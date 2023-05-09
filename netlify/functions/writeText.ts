@@ -7,8 +7,6 @@ const handler: Handler = async (event) => {
   if(event.body) {
     const newEntry = JSON.parse(JSON.parse(event.body))
     const {id, text}  = newEntry
- 
-    console.log({id, text}  )
 
     await prisma.text_data.create({
       data: {
