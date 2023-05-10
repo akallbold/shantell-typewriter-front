@@ -1,16 +1,18 @@
 import { useState } from "react";
 import "./App.css";
-import { Button, IconButton, TextField } from "@mui/material";
+import { Button, CircularProgress, IconButton, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 function InputPanel(props) {
   const { setError } = props;
   const [urlToCopy, setUrlToCopy] = useState("");
+  const [loading, setLoading] = useState("");
   const location = window.location.href;
   const [input, setInput] = useState("");
 
   const saveTextToDatabase = async () => {
+    setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
     const body = JSON.stringify({ text: input, id: uuid });
 
@@ -25,9 +27,11 @@ function InputPanel(props) {
       .then((res) => res.json())
       .then((res) => {
         setUrlToCopy(`${location}${res.id}`);
+        setLoading(false);
       })
       .catch(function (res) {
         setError(res);
+        setLoading(false);
       });
   };
 
@@ -46,6 +50,7 @@ function InputPanel(props) {
           <span className="shantell"> Shantell Sans!</span>
         </span>
       </Grid2>
+      <Grid2> {loading && <CircularProgress sx={{ margin: "1vh" }} />}</Grid2>
       {urlToCopy && (
         <Grid2
           flexDirection="row"
