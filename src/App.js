@@ -46,7 +46,11 @@ function App() {
   if (loading) return null;
   return (
     <div className="App">
-      <Grid2 container sx={{ padding: "2rem", justifyContent: "center" }}>
+      <Grid2
+        flexDirection="column"
+        container
+        sx={{ padding: "2rem", justifyContent: "center" }}
+      >
         {id && (
           <Grid2>
             <TypewriterPanel text={text} />
