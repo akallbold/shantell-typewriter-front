@@ -1,13 +1,16 @@
 import { useState } from "react";
 import "./App.css";
-import { Button, IconButton, Box, TextField } from "@mui/material";
+import { Button, IconButton, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 function InputPanel(props) {
-  const { input, setInput, setError, setLoading } = props;
-  const [url, setUrl] = useState("");
+  const { setError } = props;
+  const [urlToCopy, setUrlToCopy] = useState("");
+  const location = window.location.href;
+  const [input, setInput] = useState("");
+
   const saveTextToDatabase = async () => {
-    setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
     const body = JSON.stringify({ text: input, id: uuid });
 
@@ -21,42 +24,60 @@ function InputPanel(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        setUrl(`${window.location.href}${res.id}`);
-        setLoading(false);
+        setUrlToCopy(`${location}${res.id}`);
       })
       .catch(function (res) {
         setError(res);
-        setLoading(false);
       });
   };
 
   const copyText = () => {
-    console.log("Copy text to clipboard: ", url);
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(urlToCopy);
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <span>
-        To use this site, input a phrase in the textbox below and press the
-        submit button. Then visit the link provided to watch your text be
-        written in the coolest font out there,
-        <span className="shantell"> Shantell Sans!</span>
-      </span>
-      {/* {url && ( */}
-      <>
-        <h3>{url}</h3>
-        <IconButton onClick={copyText}>
-          <ContentCopyIcon />
-        </IconButton>
-      </>
-      {/* )} */}
-
-      <TextField value={input} onChange={(e) => setInput(e.target.value)} />
-      <Button variant="contained" onClick={saveTextToDatabase}>
-        Get Link
-      </Button>
-    </Box>
+    <Grid2 container sx={{ width: "100%" }} justifyContent="center" spacing={4}>
+      <Grid2 flexDirection="column" sx={{ border: "thick double #000000" }}>
+        <span>
+          To generate your own handwritten note, type a phrase in the text
+          container below and press the 'Get Link' button. Then visit the link
+          provided to watch your text be handwritten in the coolest font out
+          there,
+          <span className="shantell"> Shantell Sans!</span>
+        </span>
+      </Grid2>
+      {urlToCopy && (
+        <Grid2
+          flexDirection="row"
+          alignContent="center"
+          justifyContent="center"
+        >
+          <span>{urlToCopy}</span>
+          <IconButton onClick={copyText}>
+            <ContentCopyIcon />
+          </IconButton>
+        </Grid2>
+      )}
+      <Grid2 flexDirection="column" display="flex" sx={{ width: "100%" }}>
+        <TextField
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          fullwidth
+        />
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={saveTextToDatabase}
+          sx={{
+            marginTop: "1vh",
+            fontWeight: "bold",
+          }}
+          fullwidth
+        >
+          Get Link ✍️
+        </Button>
+      </Grid2>
+    </Grid2>
   );
 }
 
