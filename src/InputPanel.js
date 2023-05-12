@@ -67,7 +67,9 @@ function InputPanel(props) {
         <TextField
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          fullwidth
+          sx={{
+            width: "100%",
+          }}
         />
         <Button
           variant="contained"
@@ -76,8 +78,8 @@ function InputPanel(props) {
           sx={{
             marginTop: "1vh",
             fontWeight: "bold",
+            width: "100%",
           }}
-          fullwidth
         >
           Get Link ✍️
         </Button>

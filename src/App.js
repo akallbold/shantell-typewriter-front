@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useParams } from "react-router";
 
-// const BACKEND_BASE_URL = process.env.REACT_APP_BACKEND_BASE_URL;
-
 function App() {
   const [text, setText] = useState("");
   const [error, setError] = useState(false);
@@ -45,7 +43,10 @@ function App() {
 
   if (loading) return null;
   return (
-    <div className="App">
+    <div
+      className="App"
+      // style={{ padding: "2rem" }}
+    >
       <Grid2
         flexDirection="column"
         container
