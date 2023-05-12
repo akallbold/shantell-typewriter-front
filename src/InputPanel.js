@@ -26,7 +26,7 @@ function InputPanel(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        setUrlToCopy(`${location}${res.id}`);
+        setUrlToCopy(`${location}${uuid}`);
         setLoading(false);
       })
       .catch(function (res) {
