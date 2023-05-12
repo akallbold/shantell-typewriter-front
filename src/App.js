@@ -37,7 +37,7 @@ function App() {
 
   useEffect(() => {
     readText();
-  });
+  }, []);
 
   if (error) console.log({ error });
 
