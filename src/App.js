@@ -57,7 +57,7 @@ function App() {
         )}
 
         <Grid2>
-          <InputPanel setError={setError} setLoading={setLoading} />
+          <InputPanel id={id} setError={setError} />
         </Grid2>
       </Grid2>
     </div>

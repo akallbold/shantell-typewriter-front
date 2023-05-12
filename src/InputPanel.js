@@ -5,12 +5,13 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
 function InputPanel(props) {
-  const { setError } = props;
+  const { setError, id } = props;
   const [urlToCopy, setUrlToCopy] = useState("");
   const [loading, setLoading] = useState("");
-  const location = window.location.href;
+  const location = id
+    ? window.location.href.substring(0, window.location.href.length - 6)
+    : window.location.href;
   const [input, setInput] = useState("");
-
   const saveTextToDatabase = async () => {
     setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
