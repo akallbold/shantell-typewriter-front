@@ -40,8 +40,11 @@ function InputPanel(props) {
   };
 
   return (
-    <Grid2 container sx={{ width: "100%" }} justifyContent="center" spacing={4}>
-      <Grid2 flexDirection="column" sx={{ border: "thick double #000000" }}>
+    <Grid2 container sx={{ width: "100%" }} justifyContent="center">
+      <Grid2
+        flexDirection="column"
+        sx={{ border: "thick double #000000", marginBottom: "2rem" }}
+      >
         <span>
           To generate your own handwritten note, type a phrase in the text
           container below and press the 'Get Link' button. Then visit the link
@@ -50,7 +53,7 @@ function InputPanel(props) {
           <span className="shantell"> Shantell Sans!</span>
         </span>
       </Grid2>
-      <Grid2> {loading && <CircularProgress sx={{ margin: "1vh" }} />}</Grid2>
+      <Grid2> {loading && <CircularProgress sx={{ margin: "1rem" }} />}</Grid2>
       {urlToCopy && (
         <Grid2
           flexDirection="row"
@@ -76,7 +79,7 @@ function InputPanel(props) {
           color="secondary"
           onClick={saveTextToDatabase}
           sx={{
-            marginTop: "1vh",
+            marginTop: ".5rem",
             fontWeight: "bold",
             width: "100%",
           }}
