@@ -8,17 +8,14 @@ const createShortUrlEndpoint = process.env.REACT_APP_CREATE_SHORT_URL_ENDPOINT;
 const baseUrl = process.env.REACT_APP_BASE_URL;
 const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // B64
+
 function InputPanel(props) {
-  const { setError, id } = props;
+  const { setError } = props;
   const [urlToCopy, setUrlToCopy] = useState("");
   const [loading, setLoading] = useState("");
-  const location = id
-    ? window.location.href.substring(0, window.location.href.length - 6)
-    : window.location.href;
   const [input, setInput] = useState("");
 
   const saveTextToDatabase = async () => {
-    setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
     const body = JSON.stringify({ text: input, id: uuid });
 
@@ -32,9 +29,7 @@ function InputPanel(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        const shortUrl = getBitlyAddress();
-        setUrlToCopy(shortUrl);
-        setLoading(false);
+        return `${baseUrl}${res.id}`;
       })
       .catch(function (res) {
         setError(res);
@@ -53,21 +48,15 @@ function InputPanel(props) {
     return result;
   };
 
-  const getBitlyAddress = async () => {
+  const getBitlyAddress = async (fullUrl) => {
     if (createShortUrlEndpoint) {
-      setLoading(true);
       const newShortUrlId = createRandomString();
-      const uuid = Math.random().toString(36).substring(7);
-
       fetch(createShortUrlEndpoint, {
         method: "POST",
-        body: JSON.stringify({ fullUrl: `${location}${uuid}`, newShortUrlId }),
+        body: JSON.stringify({ fullUrl, newShortUrlId }),
       })
         .then((res) => res.json())
-        .then((res) => {
-          setLoading(false);
-          return `${baseUrl}${res.id}`;
-        })
+        .then((res) => res.id)
         .catch((res) => {
           setError(res);
           setLoading(false);
@@ -75,10 +64,18 @@ function InputPanel(props) {
     }
   };
 
+  const saveText = async () => {
+    setLoading(true);
+    const longUrl = await saveTextToDatabase();
+    const shortUrl = await getBitlyAddress(longUrl);
+    setUrlToCopy(shortUrl);
+    setLoading(false);
+  };
+
   const copyText = () => {
     navigator.clipboard.writeText(urlToCopy);
   };
-
+  console.log({ urlToCopy });
   return (
     <Grid2 container sx={{ width: "100%" }} justifyContent="center">
       <Grid2
@@ -117,7 +114,7 @@ function InputPanel(props) {
         <Button
           variant="contained"
           color="secondary"
-          onClick={saveTextToDatabase}
+          onClick={saveText}
           sx={{
             marginTop: ".5rem",
             fontWeight: "bold",
