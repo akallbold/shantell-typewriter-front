@@ -29,9 +29,11 @@ function InputPanel(props) {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log({ res });
+        console.log("baseUrl + res.id: ", `${baseUrl}${res.id}`);
         return `${baseUrl}${res.id}`;
       })
-      .catch(function (res) {
+      .catch((res) => {
         setError(res);
         setLoading(false);
       });
@@ -56,7 +58,10 @@ function InputPanel(props) {
         body: JSON.stringify({ fullUrl, newShortUrlId }),
       })
         .then((res) => res.json())
-        .then((res) => res.id)
+        .then((res) => {
+          console.log({ res });
+          return res.id;
+        })
         .catch((res) => {
           setError(res);
           setLoading(false);
@@ -67,6 +72,7 @@ function InputPanel(props) {
   const saveText = async () => {
     setLoading(true);
     const longUrl = await saveTextToDatabase();
+    console.log({ longUrl });
     const shortUrl = await getBitlyAddress(longUrl);
     setUrlToCopy(shortUrl);
     setLoading(false);
