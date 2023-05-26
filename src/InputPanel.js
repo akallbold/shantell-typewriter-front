@@ -4,6 +4,10 @@ import { Button, CircularProgress, IconButton, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 
+const createShortUrlEndpoint = process.env.REACT_APP_CREATE_SHORT_URL_ENDPOINT;
+const baseUrl = process.env.REACT_APP_BASE_URL;
+const characters =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // B64
 function InputPanel(props) {
   const { setError, id } = props;
   const [urlToCopy, setUrlToCopy] = useState("");
@@ -12,6 +16,7 @@ function InputPanel(props) {
     ? window.location.href.substring(0, window.location.href.length - 6)
     : window.location.href;
   const [input, setInput] = useState("");
+
   const saveTextToDatabase = async () => {
     setLoading(true);
     const uuid = Math.random().toString(36).substring(7);
@@ -27,13 +32,47 @@ function InputPanel(props) {
     })
       .then((res) => res.json())
       .then((res) => {
-        setUrlToCopy(`${location}${uuid}`);
+        const shortUrl = getBitlyAddress();
+        setUrlToCopy(shortUrl);
         setLoading(false);
       })
       .catch(function (res) {
         setError(res);
         setLoading(false);
       });
+  };
+
+  const createRandomString = () => {
+    let result = "";
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < 6) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+  };
+
+  const getBitlyAddress = async () => {
+    if (createShortUrlEndpoint) {
+      setLoading(true);
+      const newShortUrlId = createRandomString();
+      const uuid = Math.random().toString(36).substring(7);
+
+      fetch(createShortUrlEndpoint, {
+        method: "POST",
+        body: JSON.stringify({ fullUrl: `${location}${uuid}`, newShortUrlId }),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          setLoading(false);
+          return `${baseUrl}${res.id}`;
+        })
+        .catch((res) => {
+          setError(res);
+          setLoading(false);
+        });
+    }
   };
 
   const copyText = () => {
