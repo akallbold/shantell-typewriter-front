@@ -10,7 +10,6 @@ const characters =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; // B64
 
 function InputPanel(props) {
-  const { setError } = props;
   const [urlToCopy, setUrlToCopy] = useState("");
   const [loading, setLoading] = useState("");
   const [input, setInput] = useState("");
@@ -18,25 +17,19 @@ function InputPanel(props) {
   const saveTextToDatabase = async () => {
     const uuid = Math.random().toString(36).substring(7);
     const body = JSON.stringify({ text: input, id: uuid });
-
-    fetch("/.netlify/functions/writeText", {
+    const response = await fetch("/.netlify/functions/writeText", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
       method: "POST",
       body: JSON.stringify(body),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log({ res });
-        console.log("baseUrl + res.id: ", `${baseUrl}${res.id}`);
-        return `${baseUrl}${res.id}`;
-      })
-      .catch((res) => {
-        setError(res);
-        setLoading(false);
-      });
+    });
+    if (!response.ok) {
+      throw new Error("An error has occurred");
+    }
+    const responseJSON = await response.json();
+    return responseJSON.id;
   };
 
   const createRandomString = () => {
@@ -53,35 +46,33 @@ function InputPanel(props) {
   const getBitlyAddress = async (fullUrl) => {
     if (createShortUrlEndpoint) {
       const newShortUrlId = createRandomString();
-      fetch(createShortUrlEndpoint, {
+      const response = await fetch(createShortUrlEndpoint, {
         method: "POST",
         body: JSON.stringify({ fullUrl, newShortUrlId }),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          console.log({ res });
-          return res.id;
-        })
-        .catch((res) => {
-          setError(res);
-          setLoading(false);
-        });
+      });
+      if (!response.ok) {
+        throw new Error("An error has occurred");
+      }
+      const responseJSON = await response.json();
+      return responseJSON.id;
     }
   };
 
   const saveText = async () => {
     setLoading(true);
-    const longUrl = await saveTextToDatabase();
-    console.log({ longUrl });
+    const longUrlId = await saveTextToDatabase();
+    const longUrl = `${baseUrl}${longUrlId}`;
     const shortUrl = await getBitlyAddress(longUrl);
-    setUrlToCopy(shortUrl);
+    // hardcoding for now
+    const fullShortUrl = `https://www.notbitly.com/${shortUrl}`;
+    setUrlToCopy(fullShortUrl);
     setLoading(false);
   };
 
   const copyText = () => {
     navigator.clipboard.writeText(urlToCopy);
   };
-  console.log({ urlToCopy });
+
   return (
     <Grid2 container sx={{ width: "100%" }} justifyContent="center">
       <Grid2
