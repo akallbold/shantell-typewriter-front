@@ -49,8 +49,10 @@ function InputPanel(props) {
   };
 
   const getBitlyAddress = async (fullUrl) => {
+    console.log({ createShortUrlEndpoint });
     if (createShortUrlEndpoint) {
       const newShortUrlId = createRandomString();
+      console.log({ newShortUrlId });
       const response = await fetch(createShortUrlEndpoint, {
         method: "POST",
         body: JSON.stringify({ fullUrl, newShortUrlId }),
@@ -59,6 +61,7 @@ function InputPanel(props) {
         throw new Error("An error has occurred");
       }
       const responseJSON = await response.json();
+      console.log({ responseJSON });
       return responseJSON.id;
     }
   };
@@ -66,10 +69,14 @@ function InputPanel(props) {
   const saveText = async () => {
     setLoading(true);
     const longUrlId = await saveTextToDatabase();
+    console.log({ longUrlId });
     const longUrl = `${baseUrl}${longUrlId}`;
+    console.log({ longUrl });
     const shortUrl = await getBitlyAddress(longUrl);
+    console.log({ shortUrl });
     // hardcoding for now
     const fullShortUrl = `https://www.notbitly.com/${shortUrl}`;
+    console.log({ fullShortUrl });
     setUrlToCopy(fullShortUrl);
     setLoading(false);
   };
