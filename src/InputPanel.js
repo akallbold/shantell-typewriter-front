@@ -29,7 +29,11 @@ function InputPanel(props) {
     if (!response.ok) {
       throw new Error("An error has occurred");
     }
+
+    console.log({ response });
     const responseJSON = await response.json();
+    console.log({ responseJSON });
+
     return responseJSON.id;
   };
 
