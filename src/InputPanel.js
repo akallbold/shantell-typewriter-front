@@ -62,7 +62,7 @@ function InputPanel(props) {
       }
       const responseJSON = await response.json();
       console.log({ responseJSON });
-      return responseJSON.id;
+      return responseJSON.shortUrl;
     }
   };
 
@@ -74,10 +74,7 @@ function InputPanel(props) {
     console.log({ longUrl });
     const shortUrl = await getBitlyAddress(longUrl);
     console.log({ shortUrl });
-    // hardcoding for now
-    const fullShortUrl = `https://www.notbitly.com/${shortUrl}`;
-    console.log({ fullShortUrl });
-    setUrlToCopy(fullShortUrl);
+    setUrlToCopy(shortUrl);
     setLoading(false);
   };
 
