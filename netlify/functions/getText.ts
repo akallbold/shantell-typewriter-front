@@ -13,8 +13,6 @@ const handler: Handler = async (event) => {
         id
       }
     });
-    console.log("textRecord in getText",{textRecord})
-
       return {
         statusCode: 200,
         body: JSON.stringify(textRecord)
