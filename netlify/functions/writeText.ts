@@ -13,6 +13,7 @@ const handler: Handler = async (event) => {
         text
       }
     });
+    console.log("newEntry in writeText",{newEntry})
     return {
       statusCode: 200,
       body: JSON.stringify(newEntry)
